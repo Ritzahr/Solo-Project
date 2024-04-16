@@ -22,4 +22,13 @@ exports.selectArticleByID = (article_id) => {
         }
         return result.rows[0]
     })
-}
+    //.catch((err) => {
+    //     if (err.code === "22P02") {
+    //         console.log(err)
+    //         return err.code
+    //     } else if (err.status && err.msg) {
+
+    //     }
+        
+    // })
+};

@@ -12,10 +12,14 @@ exports.sendEndpointList = (req, res, next) => {
 }
 
 exports.sendArticleByID = (req, res, next) => {
+    
     const { article_id } = req.params;
     return selectArticleByID(article_id)
     .then((article)=>{
-        res.status(200).send({ article })
+        if(article === "22P02") 
+        {res.status(400).send({msg: "Invalid input"})}
+        else
+        {res.status(200).send({ article })}
     }).catch(next);
 
 }
