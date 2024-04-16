@@ -89,3 +89,38 @@ describe('GET /api/topics', () => {
             })
         });
     })
+    describe('GET /api/articles', () => {
+        test('Responds with status code 200 and an articles array, with article objects.' , () => {
+            return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then((response) => {
+                const articles = response.body.articles;
+                expect(Array.isArray(articles)).toBe(true);
+                articles.forEach((article) => {
+                    expect(typeof article).toBe("object")
+                })
+            })
+        });
+        test('Returned article objects posses an additional property of \'comment_count\'', () => {
+            return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then((response) => {
+                const articles = response.body.articles;
+                expect(articles[0]).toHaveProperty("comment_count")
+            })    
+        })
+        test('Property \'comment_count\', now has a value of the number of comments who share that article ID', () => {
+            return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then((response) => {
+                const articles = response.body.articles;
+                console.log(articles)
+                expect(typeof articles[0].comment_count).toBe("string")
+        
+           })    
+        })
+    
+})
