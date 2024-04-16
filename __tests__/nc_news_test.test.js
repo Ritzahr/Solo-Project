@@ -52,7 +52,22 @@ describe('GET /api/topics', () => {
                 expect(endpointObject).toEqual({endpoints})
             })
         });
-        
     });
-
-    
+    describe('GET /api/articles/:article_id', () => {
+        test('Responds with status code 200 and an article object, with the correct properties', () => {
+            return request(app)
+            .get("/api/articles/4")
+            .expect(200)
+            .then((response)=>{
+                const article = response.body.article;
+                expect(article).toHaveProperty("author");
+                expect(article).toHaveProperty("title");
+                expect(article).toHaveProperty("article_id");
+                expect(article).toHaveProperty("body");
+                expect(article).toHaveProperty("topic");
+                expect(article).toHaveProperty("created_at");
+                expect(article).toHaveProperty("votes");
+                expect(article).toHaveProperty("article_img_url");
+            })
+        })
+    })
