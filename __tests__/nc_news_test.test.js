@@ -52,7 +52,40 @@ describe('GET /api/topics', () => {
                 expect(endpointObject).toEqual({endpoints})
             })
         });
-        
     });
+    describe('GET /api/articles/:article_id', () => {
+        test('Responds with status code 200 and an article object, with the correct properties', () => {
+            return request(app)
+            .get("/api/articles/4")
+            .expect(200)
+            .then((response)=>{
+                const article = response.body.article;
+                expect(article).toHaveProperty("author");
+                expect(article).toHaveProperty("title");
+                expect(article).toHaveProperty("article_id");
+                expect(article).toHaveProperty("body");
+                expect(article).toHaveProperty("topic");
+                expect(article).toHaveProperty("created_at");
+                expect(article).toHaveProperty("votes");
+                expect(article).toHaveProperty("article_img_url");
 
-    
+                expect(article.article_id).toEqual(4);
+            })
+        })
+        test('Responds with status code 404 and error message regarding the ID, when user inputs ID that cannot be found in database', () => {
+            return request(app)
+            .get("/api/articles/9999")
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toBe("No article found under ID: 9999");
+            })
+        });
+        test('Responds with status code 400 and error message, when user inputs an malformed request.', () => {
+            return request(app)
+            .get("/api/articles/six")
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe("Invalid input");
+            })
+        });
+    })
