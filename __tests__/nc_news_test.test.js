@@ -70,4 +70,12 @@ describe('GET /api/topics', () => {
                 expect(article).toHaveProperty("article_img_url");
             })
         })
+        test('Responds with status code 400 and error message regarding the ID, when user inputs ID that cannot be found in database', () => {
+            return request(app)
+            .get("/api/articles/9999")
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toBe("No article found under ID: 9999");
+            })
+        });
     })
