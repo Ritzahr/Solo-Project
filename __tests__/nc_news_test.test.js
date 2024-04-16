@@ -68,6 +68,8 @@ describe('GET /api/topics', () => {
                 expect(article).toHaveProperty("created_at");
                 expect(article).toHaveProperty("votes");
                 expect(article).toHaveProperty("article_img_url");
+
+                expect(article.article_id).toEqual(4);
             })
         })
         test('Responds with status code 404 and error message regarding the ID, when user inputs ID that cannot be found in database', () => {

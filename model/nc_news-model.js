@@ -1,4 +1,3 @@
-const e = require("express");
 const db = require("../db/connection");
 const format = require("pg-format");
 
@@ -22,13 +21,4 @@ exports.selectArticleByID = (article_id) => {
         }
         return result.rows[0]
     })
-    //.catch((err) => {
-    //     if (err.code === "22P02") {
-    //         console.log(err)
-    //         return err.code
-    //     } else if (err.status && err.msg) {
-
-    //     }
-        
-    // })
-};
+}
