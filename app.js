@@ -1,8 +1,10 @@
 const express = require("express");
-const { sendTopics } = require("./controller/nc_news-controllers");
+const { sendTopics, sendEndpointList } = require("./controller/nc_news-controllers");
 const app = express(); 
 
 app.get("/api/topics", sendTopics);
+
+app.get("/api", sendEndpointList)
 
 app.all("*", (req,res,next) => {
     res.status(404).send({msg: "Path not found"})
