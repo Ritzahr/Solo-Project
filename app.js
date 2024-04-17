@@ -1,6 +1,9 @@
 const express = require("express");
-const { sendTopics, sendEndpointList, sendArticleByID, sendAllArticles, sendAllCommentsByID } = require("./controller/nc_news-controllers");
+const { sendTopics, sendEndpointList, sendArticleByID, sendAllArticles, sendAllCommentsByID, postCommentsByID } = require("./controller/nc_news-controllers");
 const app = express(); 
+
+
+app.use(express.json());
 
 app.get("/api/topics", sendTopics);
 
@@ -11,6 +14,9 @@ app.get("/api/articles/:article_id", sendArticleByID);
 app.get("/api/articles", sendAllArticles);
 
 app.get("/api/articles/:article_id/comments", sendAllCommentsByID)
+
+app.post("/api/articles/:article_id/comments", postCommentsByID)
+
 
 app.all("*", (req,res,next) => {
     res.status(400).send({msg: "Path Not Found"})

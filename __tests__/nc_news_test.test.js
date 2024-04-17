@@ -209,3 +209,19 @@ describe('GET /api/topics', () => {
             })
         });
 });
+    describe('POST /api/articles/:article_id/comments', () => {
+        test('POST /api/articles/:article_id/comments, posts a new comment to our array of comments by article ID.', () => {
+            const body = "This is an added comment"
+            const userData = data.userData[0].username;
+
+            return request(app)
+            .post("/api/articles/6/comments")
+            .expect(200)
+            .send({ username: userData, body: body,})
+            .then((response)=>{
+                const postedComments = response.body.comment;
+                expect(postedComments).toHaveProperty("author");
+                expect(postedComments).toHaveProperty("body");
+            })
+        });
+});
