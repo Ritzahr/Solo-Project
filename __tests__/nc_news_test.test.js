@@ -38,7 +38,7 @@ describe('GET /api/topics', () => {
         .get("/api/givemetopics")
         .expect(400)
         .then((res) => {
-            expect(res.body.msg).toBe("Path not found");
+            expect(res.body.msg).toBe("Path Not Found");
         })
     })
     });
@@ -85,7 +85,7 @@ describe('GET /api/topics', () => {
             .get("/api/articles/six")
             .expect(400)
             .then((response) => {
-                expect(response.body.msg).toBe("Invalid input");
+                expect(response.body.msg).toBe("Invalid Input");
             })
         });
     })
@@ -155,7 +155,57 @@ describe('GET /api/topics', () => {
           .get("/api/articlez")
           .expect(400)
           .then((response)=>{
-            expect(response.body.msg).toBe("Path not found");
+            expect(response.body.msg).toBe("Path Not Found");
           })  
         })
 })
+    describe('GET /api/articles/:article_id/comments', () => {
+        test('GET /api/articles/:article_id/comments responds with an array of comments for the given article ID', () => {
+            return request(app)
+            .get("/api/articles/1/comments")
+            .then((response) =>{
+                const comments = response.body.comments
+                expect(Array.isArray(comments)).toBe(true)
+                expect(comments.length).toBe(11);
+            })
+        });
+        test('Test whether all comments responded with, possess correct properties', () => {
+            return request(app)
+            .get("/api/articles/1/comments")
+            .then((response) =>{
+                const comments = response.body.comments
+                comments.forEach((comment)=>{
+                    expect(comment).toHaveProperty("comment_id")
+                    expect(comment).toHaveProperty("votes")
+                    expect(comment).toHaveProperty("created_at")
+                    expect(comment).toHaveProperty("author")
+                    expect(comment).toHaveProperty("body")
+                    expect(comment).toHaveProperty("article_id")
+                })
+            })
+        })
+        test('GET /api/articles/:article_id/comments responds with \'Not found\' message and 404 code, when requested with an ID that doesn\'t match in the database', () => {
+            return request(app)
+            .get("/api/articles/7/comments")
+            .expect(404)
+            .then((response)=> {
+                expect(response.body.msg).toBe("Not Found")
+            })
+        });
+        test('GET /api/articles/:article_id/comments responds with \'Invalid Input\' message and 400 code, when requested with the wrong input type for ID', () => {
+            return request(app)
+            .get("/api/articles/Seven/comments")
+            .expect(400)
+            .then((response)=> {
+                expect(response.body.msg).toBe("Invalid Input")
+            })
+        });
+        test('GET /api/articles/:article_id/comments responds with \'Path Not Found\' message and 400 code, when requested with a malformed path', () => {
+            return request(app)
+            .get("/api/articles/1/Komments")
+            .expect(400)
+            .then((response)=> {
+                expect(response.body.msg).toBe("Path Not Found")
+            })
+        });
+});

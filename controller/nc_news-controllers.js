@@ -1,4 +1,4 @@
-const { fetchTopics, selectArticleByID, selectAllArticles } = require("../model/nc_news-model")
+const { fetchTopics, selectArticleByID, selectAllArticles, selectAllCommentsByID } = require("../model/nc_news-model")
 const endpoints = require("../endpoints.json");
 
 exports.sendTopics = (req, res, next) => {
@@ -24,3 +24,10 @@ exports.sendAllArticles = (req, res, next) => {
         res.status(200).send({articles: articles});
     }).catch(next)
 };
+
+exports.sendAllCommentsByID = (req, res, next) => {
+    const { article_id } = req.params
+    return selectAllCommentsByID(article_id).then((comments)=>{
+        res.status(200).send({comments: comments})
+    }).catch(next)
+}
