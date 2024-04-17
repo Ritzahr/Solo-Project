@@ -11,7 +11,7 @@ app.get("/api/articles/:article_id", sendArticleByID);
 app.get("/api/articles", sendAllArticles);
 
 app.all("*", (req,res,next) => {
-    res.status(404).send({msg: "Path not found"})
+    res.status(400).send({msg: "Path not found"})
 })
 
 app.use((err, req, res, next) => {

@@ -22,5 +22,5 @@ exports.sendArticleByID = (req, res, next) => {
 exports.sendAllArticles = (req, res, next) => {
     return selectAllArticles().then((articles) => {
         res.status(200).send({articles: articles});
-    })
+    }).catch(next)
 };

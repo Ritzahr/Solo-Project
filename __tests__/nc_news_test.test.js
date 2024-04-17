@@ -36,7 +36,7 @@ describe('GET /api/topics', () => {
     test("GET /api/topics, responds with an error of 404, when passed an invalid path", () => {
         return request(app)
         .get("/api/givemetopics")
-        .expect(404)
+        .expect(400)
         .then((res) => {
             expect(res.body.msg).toBe("Path not found");
         })
@@ -149,5 +149,13 @@ describe('GET /api/topics', () => {
                     expect(article).not.toHaveProperty("body");
                 })
             })
+        })
+        test('Responds with 400 status code and error message, if provided a malformed path', () =>{
+          return request(app)
+          .get("/api/articlez")
+          .expect(400)
+          .then((response)=>{
+            expect(response.body.msg).toBe("Path not found");
+          })  
         })
 })

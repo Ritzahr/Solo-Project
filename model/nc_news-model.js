@@ -35,6 +35,10 @@ exports.selectAllArticles = () => {
         delete article.body;
        })
        return articlesModified
+    }).catch((err)=>{
+        if(err) {
+            console.log(err)
+        }
     })
 }
 
