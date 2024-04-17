@@ -90,7 +90,7 @@ describe('GET /api/topics', () => {
         });
     })
     describe('GET /api/articles', () => {
-        test('Responds with status code 200 and an articles array, with article objects.' , () => {
+        test('Responds with status code 200 and an articles array, with article objects and correct length.' , () => {
             return request(app)
             .get("/api/articles")
             .expect(200)
@@ -100,6 +100,7 @@ describe('GET /api/topics', () => {
                 articles.forEach((article) => {
                     expect(typeof article).toBe("object")
                 })
+                expect(articles.length).toBe(13);
             })
         });
         test('Returned article objects posses an additional property of \'comment_count\'', () => {
@@ -108,7 +109,9 @@ describe('GET /api/topics', () => {
             .expect(200)
             .then((response) => {
                 const articles = response.body.articles;
-                expect(articles[0]).toHaveProperty("comment_count")
+                articles.forEach((article) => {
+                    expect(article).toHaveProperty("comment_count");
+                }) 
             })    
         })
         test('Property \'comment_count\', now has a value of the number of comments who share that article ID', () => {
@@ -117,10 +120,34 @@ describe('GET /api/topics', () => {
             .expect(200)
             .then((response) => {
                 const articles = response.body.articles;
-                console.log(articles)
-                expect(typeof articles[0].comment_count).toBe("string")
-        
+                articles.forEach((article) => {
+                    if(article.article_id === 1) {
+                        expect(article.comment_count).toBe("11")  
+                    }
+                    if(article.article_id === 3) {
+                        expect(article.comment_count).toBe("2")  
+                    }
+                    if(article.article_id === 5) {
+                        expect(article.comment_count).toBe("2")  
+                    }
+                    if(article.article_id === 6) {
+                        expect(article.comment_count).toBe("1")  
+                    }
+                    if(article.article_id === 9) {
+                        expect(article.comment_count).toBe("2")  
+                    }
+                })   
            })    
         })
-    
+        test('Test that property \'body\' is not present inside the article objects', () => {
+            return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then((response)=>{
+                const articles = response.body.articles;
+                articles.forEach((article) => {
+                    expect(article).not.toHaveProperty("body");
+                })
+            })
+        })
 })

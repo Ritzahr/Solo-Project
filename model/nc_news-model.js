@@ -22,25 +22,24 @@ exports.selectArticleByID = (article_id) => {
     })
 }
 exports.selectAllArticles = () => {
-    return db.query("SELECT articles.*, COUNT(comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.comment_id = articles.article_id GROUP BY articles.article_id;").then((result) => {
-       console.log(result.rows)
-       return result.rows
+    return db.query(`
+     SELECT articles.*, COUNT(articles.article_id) AS comment_count
+     FROM articles 
+     LEFT JOIN comments 
+     ON articles.article_id = comments.article_id 
+     GROUP BY articles.article_id 
+     ORDER BY created_at DESC
+     ;`).then((result) => {
+       const articlesModified = result.rows;
+       articlesModified.forEach((article)=>{ 
+        delete article.body;
+       })
+       return articlesModified
     })
 }
-/*SELECT animal_name
-FROM animals
-LEFT JOIN northcoders ON northcoders.favourite_animal_id = animals.animal_id
-GROUP BY animals.animal_id;
-*/
-// return db.query("SELECT * FROM articles ;").then((result)=>{
-//     const articles = result.rows;
-//      articles.forEach((article) => {
-//          return db.query("SELECT * FROM comments WHERE article_id=$1", [article.article_id]).then((comments) => {
-//             article.comment_count=comments.rows.length
-//             // console.log(article)
-//             return article
-//         })
-//     })
-//     console.log(articles)
-//     return articles
-// })
+
+
+
+
+
+// "SELECT articles.*, COUNT(comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.comment_id = articles.article_id GROUP BY articles.article_id;"
