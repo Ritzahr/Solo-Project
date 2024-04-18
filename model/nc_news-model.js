@@ -5,10 +5,6 @@ const format = require("pg-format");
 exports.fetchTopics = () => {
     return db.query('SELECT * FROM topics;').then((response) => {
         return response.rows
-}).catch((err) => {
-    if (err) {
-        return err.code
-    }
 })
 }
 

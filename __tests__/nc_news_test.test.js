@@ -219,4 +219,26 @@ describe('GET /api/topics', () => {
                 expect(postedComments).toHaveProperty("body");
             })
         });
+        test('POST /api/articles/:article_id/comments, responds with a status code 400, when missing required fields in body', () => {
+    
+            return request(app)
+            .post("/api/articles/9/comments")
+            .expect(400)
+            .send({ })
+            .then((response)=>{
+                expect(response.body.msg).toBe("Bad Request");
+            })
+        });
+        test('POST /api/articles/:article_id/comments, responds with a status code of 404, when article ID is not found in db', () => {
+            const body = "This is an added comment"
+            const userData = data.userData[1].username;
+
+            return request(app)
+            .post("/api/articles/777/comments")
+            .expect(404)
+            .send({ username: userData, body: body })
+            .then((response)=>{
+                expect(response.body.msg).toBe("No article found under ID:777")
+            })
+        });
 });
