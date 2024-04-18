@@ -241,4 +241,16 @@ describe('GET /api/topics', () => {
                 expect(response.body.msg).toBe("No article found under ID:777")
             })
         });
-});
+        test('POST /api/articles/:article_id/comments, responds with a status code of 404, when username is not found in db', () => {
+            const body = "This is an added comment"
+            const userData = "fake_youser";
+
+            return request(app)
+            .post("/api/articles/9/comments")
+            .expect(404)
+            .send({ username: userData, body: body })
+            .then((response)=>{
+                expect(response.body.msg).toBe(`Username ${userData}, not found!`)
+            });
+        })
+    })

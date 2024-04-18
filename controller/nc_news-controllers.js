@@ -42,9 +42,7 @@ exports.postCommentsByID = (req, res, next) =>{
     return addCommentByID(comment, article_id).then((comment) => {
         res.status(200).send({comment: comment});
     }).catch((err) => {
-        if(err.code === "23503") {
-            next({ status: 404, msg:`No article found under ID:${article_id}` })
-        }
+        err.hint = [article_id, comment.username]
         next(err)
     })
 }
