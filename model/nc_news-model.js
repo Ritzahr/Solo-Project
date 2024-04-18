@@ -55,3 +55,17 @@ exports.addCommentByID = (comment, article_id) => {
         return response.rows[0]
     })
 }
+
+exports.modifyArticleByID = ( id, instructions) => {
+    
+    const { inc_votes } = instructions;
+    return db.query(`
+    UPDATE articles
+    SET votes=votes + $1
+    WHERE article_id=$2
+    RETURNING *
+    ;`, [inc_votes,id]).then((response) => {
+        
+        return response.rows[0]
+    })
+}

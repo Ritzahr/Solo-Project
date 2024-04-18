@@ -254,3 +254,33 @@ describe('GET /api/topics', () => {
             });
         })
     })
+    describe('PATCH /api/articles/:article_id', () => {
+        test('PATCH /api/articles/:article_id, should update article by id, with provided positive integer', () => {
+            const newVote = 10
+            
+            const update = { inc_votes: newVote };
+            
+
+            return request(app)
+            .patch("/api/articles/1")
+            .expect(200)
+            .send(update)
+            .then((response) => {
+                const updatedArticle = response.body.article
+                expect(updatedArticle.votes).toBe(110);
+            })
+        });
+        test('PATCH /api/articles/:article_id, should update article by id, with provided negative integer', () => {
+            const newVote2 = -100;
+            const update2 = { inc_votes: newVote2 };
+
+            return request(app)
+            .patch("/api/articles/1")
+            .expect(200)
+            .send(update2)
+            .then((response) => {
+                const updatedArticle2 = response.body.article
+                expect(updatedArticle2.votes).toBe(0);
+            })
+        });
+    });

@@ -1,5 +1,5 @@
 const express = require("express");
-const { sendTopics, sendEndpointList, sendArticleByID, sendAllArticles, sendAllCommentsByID, postCommentsByID } = require("./controller/nc_news-controllers");
+const { sendTopics, sendEndpointList, sendArticleByID, sendAllArticles, sendAllCommentsByID, postCommentsByID, updateArticlesByID } = require("./controller/nc_news-controllers");
 const app = express(); 
 
 
@@ -17,25 +17,24 @@ app.get("/api/articles/:article_id/comments", sendAllCommentsByID)
 
 app.post("/api/articles/:article_id/comments", postCommentsByID)
 
+app.patch("/api/articles/:article_id", updateArticlesByID)
+
 
 app.all("*", (req,res,next) => {
     res.status(404).send({msg: "Path Not Found"})
 })
 
 app.use((err, req, res, next) => {
-    if (err.status && err.msg){
-        res.status(err.status).send({ msg: err.msg})
-        } 
-    else if (err.code === '22P02') {
-            res.status(400).send({ msg:"Bad Request" });}
-
+    if (err.status && err.msg) {res.status(err.status).send({ msg: err.msg})}
     next(err)
 })
 
 app.use((err, req, res, next) => {
-    if(err.code === "23503" && err.constraint === 'comments_article_id_fkey') {
+    if (err.code === '22P02') {
+        res.status(400).send({ msg:"Bad Request" });
+    } else if (err.code === "23503" && err.constraint === 'comments_article_id_fkey') {
         res.status(404).send({ msg:`No article found under ID:${err.hint[0]}`})
-    } else if(err.code === "23503" && err.constraint === 'comments_author_fkey') {
+    } else if (err.code === "23503" && err.constraint === 'comments_author_fkey') {
         res.status(404).send({ msg:`Username ${err.hint[1]}, not found!`})
     } else if (err.code ==="23502") {
         res.status(400).send({ msg: "Bad Request" })
