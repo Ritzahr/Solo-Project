@@ -50,9 +50,12 @@ exports.postCommentsByID = (req, res, next) =>{
 exports.updateArticlesByID = (req, res, next) => {
     const { article_id} = req.params;
     const instructions = req.body
+   
     return selectArticleByID(article_id).then(() => {
         return modifyArticleByID(article_id, instructions).then((newArticle) => {
             res.status(200).send({ article: newArticle })
         })
+    }).catch((err) => {
+        next(err)
     })
 }
