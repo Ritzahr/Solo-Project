@@ -5,10 +5,6 @@ const format = require("pg-format");
 exports.fetchTopics = () => {
     return db.query('SELECT * FROM topics;').then((response) => {
         return response.rows
-}).catch((err) => {
-    if (err) {
-        return err.code
-    }
 })
 }
 
@@ -41,9 +37,21 @@ exports.selectAllArticles = () => {
 exports.selectAllCommentsByID = (article_id) => {
     return db.query(`SELECT * FROM comments WHERE article_id = $1`,[article_id]).then((response) => {
         const comments = response.rows;
-        if (comments.length === 0) {
-            return Promise.reject({status: 404, msg: "Not Found"})
-        }
         return comments
+    })
+}
+
+exports.addCommentByID = (comment, article_id) => {
+    const { username, body} = comment;
+  
+    return db.query(`
+    INSERT INTO comments 
+    (author, body, article_id)
+    VALUES ($1, $2, $3) 
+    RETURNING *
+    ;`, 
+    [username, body, article_id])
+    .then((response) => {
+        return response.rows[0]
     })
 }

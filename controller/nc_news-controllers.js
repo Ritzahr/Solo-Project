@@ -1,4 +1,4 @@
-const { fetchTopics, selectArticleByID, selectAllArticles, selectAllCommentsByID } = require("../model/nc_news-model")
+const { fetchTopics, selectArticleByID, selectAllArticles, selectAllCommentsByID, addCommentByID } = require("../model/nc_news-model")
 const endpoints = require("../endpoints.json");
 
 exports.sendTopics = (req, res, next) => {
@@ -26,8 +26,25 @@ exports.sendAllArticles = (req, res, next) => {
 };
 
 exports.sendAllCommentsByID = (req, res, next) => {
-    const { article_id } = req.params
-    return selectAllCommentsByID(article_id).then((comments)=>{
+    const { article_id } = req.params;
+    return selectArticleByID(article_id).then(() =>{
+        return selectAllCommentsByID(article_id).then(( comments)=>{
         res.status(200).send({comments: comments})
-    }).catch(next)
+    })
+    }).catch((err) => {
+        next(err)
+    })
+}
+
+exports.postCommentsByID = (req, res, next) =>{
+    const { article_id } = req.params;
+    const comment = req.body;
+    return addCommentByID(comment, article_id).then((comment) => {
+        res.status(200).send({comment: comment});
+    }).catch((err) => {
+        if(err.code === "23503") {
+            next({ status: 404, msg:`No article found under ID:${article_id}` })
+        }
+        next(err)
+    })
 }
