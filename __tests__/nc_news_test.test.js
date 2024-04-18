@@ -36,7 +36,7 @@ describe('GET /api/topics', () => {
     test("GET /api/topics, responds with an error of 404, when passed an invalid path", () => {
         return request(app)
         .get("/api/givemetopics")
-        .expect(400)
+        .expect(404)
         .then((res) => {
             expect(res.body.msg).toBe("Path Not Found");
         })
@@ -85,7 +85,7 @@ describe('GET /api/topics', () => {
             .get("/api/articles/six")
             .expect(400)
             .then((response) => {
-                expect(response.body.msg).toBe("Invalid Input");
+                expect(response.body.msg).toBe("Bad Request");
             })
         });
     })
@@ -96,11 +96,12 @@ describe('GET /api/topics', () => {
             .expect(200)
             .then((response) => {
                 const articles = response.body.articles;
+                expect(articles.length).toBe(13);
                 expect(Array.isArray(articles)).toBe(true);
                 articles.forEach((article) => {
                     expect(typeof article).toBe("object")
                 })
-                expect(articles.length).toBe(13);
+               
             })
         });
         test('Returned article objects posses an additional property of \'comment_count\'', () => {
@@ -150,10 +151,10 @@ describe('GET /api/topics', () => {
                 })
             })
         })
-        test('Responds with 400 status code and error message, if provided a malformed path', () =>{
+        test('Responds with 404 status code and error message, if provided a malformed path', () =>{
           return request(app)
           .get("/api/articlez")
-          .expect(400)
+          .expect(404)
           .then((response)=>{
             expect(response.body.msg).toBe("Path Not Found");
           })  
@@ -181,34 +182,28 @@ describe('GET /api/topics', () => {
                     expect(comment).toHaveProperty("author")
                     expect(comment).toHaveProperty("body")
                     expect(comment).toHaveProperty("article_id")
+                    expect(comment.article_id).toBe(1)
                 })
             })
         })
-        test('GET /api/articles/:article_id/comments responds with \'Not found\' message and 404 code, when requested with an ID that doesn\'t match in the database', () => {
-            return request(app)
-            .get("/api/articles/7/comments")
-            .expect(404)
-            .then((response)=> {
-                expect(response.body.msg).toBe("Not Found")
-            })
         });
         test('GET /api/articles/:article_id/comments responds with \'Invalid Input\' message and 400 code, when requested with the wrong input type for ID', () => {
             return request(app)
             .get("/api/articles/Seven/comments")
             .expect(400)
             .then((response)=> {
-                expect(response.body.msg).toBe("Invalid Input")
+                expect(response.body.msg).toBe("Bad Request")
             })
         });
-        test('GET /api/articles/:article_id/comments responds with \'Path Not Found\' message and 400 code, when requested with a malformed path', () => {
+        test('GET /api/articles/:article_id/comments returns 404, when article ID is not found', () => {
             return request(app)
-            .get("/api/articles/1/Komments")
-            .expect(400)
+            .get("/api/articles/8888/comments")
+            .expect(404)
             .then((response)=> {
-                expect(response.body.msg).toBe("Path Not Found")
+                expect(response.body.msg).toBe("No article found under ID: 8888")
             })
         });
-});
+
     describe('POST /api/articles/:article_id/comments', () => {
         test('POST /api/articles/:article_id/comments, posts a new comment to our array of comments by article ID.', () => {
             const body = "This is an added comment"

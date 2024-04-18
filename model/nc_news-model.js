@@ -41,9 +41,6 @@ exports.selectAllArticles = () => {
 exports.selectAllCommentsByID = (article_id) => {
     return db.query(`SELECT * FROM comments WHERE article_id = $1`,[article_id]).then((response) => {
         const comments = response.rows;
-        if (comments.length === 0) {
-            return Promise.reject({status: 404, msg: "Not Found"})
-        }
         return comments
     })
 }

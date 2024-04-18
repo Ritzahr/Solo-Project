@@ -26,10 +26,14 @@ exports.sendAllArticles = (req, res, next) => {
 };
 
 exports.sendAllCommentsByID = (req, res, next) => {
-    const { article_id } = req.params
-    return selectAllCommentsByID(article_id).then((comments)=>{
+    const { article_id } = req.params;
+    return selectArticleByID(article_id).then(() =>{
+        return selectAllCommentsByID(article_id).then(( comments)=>{
         res.status(200).send({comments: comments})
-    }).catch(next)
+    })
+    }).catch((err) => {
+        next(err)
+    })
 }
 
 exports.postCommentsByID = (req, res, next) =>{

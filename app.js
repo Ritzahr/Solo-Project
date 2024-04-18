@@ -19,7 +19,7 @@ app.post("/api/articles/:article_id/comments", postCommentsByID)
 
 
 app.all("*", (req,res,next) => {
-    res.status(400).send({msg: "Path Not Found"})
+    res.status(404).send({msg: "Path Not Found"})
 })
 
 app.use((err, req, res, next) => {
@@ -27,7 +27,7 @@ app.use((err, req, res, next) => {
         res.status(err.status).send({ msg: err.msg})
         } 
     else if (err.code === '22P02') {
-            res.status(400).send({ msg: "Invalid Input"});}
+            res.status(400).send({ msg:"Bad Request" });}
 })
 
 app.use((err, req, res, next) => {
