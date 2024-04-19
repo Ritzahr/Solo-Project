@@ -83,3 +83,13 @@ exports.selectCommentToBeDeleted = (comment_id) => {
         return deletedComment
     })
 }
+
+exports.selectAllUsers = () => {
+    return db.query(`
+    SELECT * 
+    FROM users
+    ;`).then((response) => {
+        const users = response.rows;
+        return users
+    })
+}

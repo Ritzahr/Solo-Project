@@ -1,5 +1,5 @@
 const express = require("express");
-const { sendTopics, sendEndpointList, sendArticleByID, sendAllArticles, sendAllCommentsByID, postCommentsByID, updateArticlesByID, deleteCommentByID } = require("./controller/nc_news-controllers");
+const { sendTopics, sendEndpointList, sendArticleByID, sendAllArticles, sendAllCommentsByID, postCommentsByID, updateArticlesByID, deleteCommentByID, sendAllUsers } = require("./controller/nc_news-controllers");
 const app = express(); 
 
 
@@ -14,6 +14,8 @@ app.get("/api/articles/:article_id", sendArticleByID);
 app.get("/api/articles", sendAllArticles);
 
 app.get("/api/articles/:article_id/comments", sendAllCommentsByID)
+
+app.get("/api/users", sendAllUsers)
 
 app.post("/api/articles/:article_id/comments", postCommentsByID)
 
