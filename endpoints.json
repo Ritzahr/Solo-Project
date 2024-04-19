@@ -27,7 +27,7 @@
     }
   },
   "GET /api/articles/:article-id": {
-    "description": "serves an article object, that matches an id provided",
+    "description": "*NEW FEATURE*: serves an article object, that matches an id provided, with a comment_count property that counts how many comments share the article ID in question",
     "queries": [],
     "exampleResponse": {
       "article_id": 4,
