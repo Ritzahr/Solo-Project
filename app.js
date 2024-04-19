@@ -1,5 +1,5 @@
 const express = require("express");
-const { sendTopics, sendEndpointList, sendArticleByID, sendAllArticles, sendAllCommentsByID, postCommentsByID, updateArticlesByID } = require("./controller/nc_news-controllers");
+const { sendTopics, sendEndpointList, sendArticleByID, sendAllArticles, sendAllCommentsByID, postCommentsByID, updateArticlesByID, deleteCommentByID } = require("./controller/nc_news-controllers");
 const app = express(); 
 
 
@@ -19,6 +19,7 @@ app.post("/api/articles/:article_id/comments", postCommentsByID)
 
 app.patch("/api/articles/:article_id", updateArticlesByID)
 
+app.delete("/api/comments/:comment_id", deleteCommentByID)
 
 app.all("*", (req,res,next) => {
     res.status(404).send({msg: "Path Not Found"})
@@ -28,6 +29,8 @@ app.use((err, req, res, next) => {
     if (err.status && err.msg) {res.status(err.status).send({ msg: err.msg})}
     next(err)
 })
+
+
 
 app.use((err, req, res, next) => {
     if (err.code === '22P02') {

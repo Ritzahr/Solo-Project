@@ -331,4 +331,15 @@ describe('GET /api/topics', () => {
             })
         });
     });
+
+    describe.only('DELETE /api/comments/:comment_id', () => {
+        test('Delete comment by comment ID, respond with 204 and no content', () => {
+            return request(app)
+            .delete("/api/comments/1")
+            .expect(204)
+            .then((response)=> {
+                expect(response.body).toEqual({})
+            })
+        });
+    });
    
