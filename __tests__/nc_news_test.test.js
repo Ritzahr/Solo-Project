@@ -77,7 +77,7 @@ describe('GET /api/topics', () => {
             .get("/api/articles/9999")
             .expect(404)
             .then((response) => {
-                expect(response.body.msg).toBe("No article found under ID: 9999");
+                expect(response.body.msg).toBe("No article found under ID:9999");
             })
         });
         test('Responds with status code 400 and error message, when user inputs an malformed request.', () => {
@@ -200,7 +200,7 @@ describe('GET /api/topics', () => {
             .get("/api/articles/8888/comments")
             .expect(404)
             .then((response)=> {
-                expect(response.body.msg).toBe("No article found under ID: 8888")
+                expect(response.body.msg).toBe("No article found under ID:8888")
             })
         });
 
@@ -254,3 +254,81 @@ describe('GET /api/topics', () => {
             });
         })
     })
+    describe('PATCH /api/articles/:article_id', () => {
+        test('PATCH /api/articles/:article_id, should update article by id, with provided positive integer', () => {
+            const newVote = 10
+            const update = { inc_votes: newVote };
+
+            return request(app)
+            .patch("/api/articles/1")
+            .expect(200)
+            .send(update)
+            .then((response) => {
+                const updatedArticle = response.body.article
+                expect(updatedArticle.votes).toBe(110);
+            })
+        });
+        test('PATCH /api/articles/:article_id, should update article by id, with provided negative integer', () => {
+            const newVote2 = -100;
+            const update2 = { inc_votes: newVote2 };
+
+            return request(app)
+            .patch("/api/articles/1")
+            .expect(200)
+            .send(update2)
+            .then((response) => {
+                const updatedArticle2 = response.body.article
+                expect(updatedArticle2.votes).toBe(0);
+            })
+        });
+        test('PATCH /api/articles/:article_id, responds with status code 400, when user requests with an invalid ID', () => {
+            const newVote = 10
+            const update = { inc_votes: newVote };
+
+            return request(app)
+            .patch("/api/articles/one")
+            .expect(400)
+            .send(update)
+            .then((response) => {
+                expect(response.body.msg).toBe("Bad Request")
+                
+            })
+        });
+        test('PATCH /api/articles/:article_id, responds with status code 404, when user requests with an non-existent article, ', () => {
+            const newVote = 10
+            const update = { inc_votes: newVote };
+
+            return request(app)
+            .patch("/api/articles/888")
+            .expect(404)
+            .send(update)
+            .then((response) => {
+                expect(response.body.msg).toBe("No article found under ID:888")
+                
+            })
+        });
+        test('PATCH /api/articles/:article_id, responds with status code 400, when user requests with a malformed body', () => {
+            const update = { };
+
+            return request(app)
+            .patch("/api/articles/1")
+            .expect(400)
+            .send(update)
+            .then((response) => {
+                expect(response.body.msg).toBe("Bad Request")
+            })
+        });
+        test('PATCH /api/articles/:article_id, responds with status code 400, when user requests with an incorrect type input in body', () => {
+            const newVote = "plus 100"
+            const update = { inc_votes: newVote };
+
+            return request(app)
+            .patch("/api/articles/1")
+            .expect(400)
+            .send(update)
+            .then((response) => {
+                expect(response.body.msg).toBe("Bad Request")
+            })
+        });
+    });
+   
