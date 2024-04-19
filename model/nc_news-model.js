@@ -17,15 +17,30 @@ exports.selectArticleByID = (article_id) => {
         return result.rows[0]
     })
 }
-exports.selectAllArticles = () => {
-    return db.query(`
-     SELECT articles.*, COUNT(articles.article_id) AS comment_count
-     FROM articles 
-     LEFT JOIN comments 
-     ON articles.article_id = comments.article_id 
-     GROUP BY articles.article_id 
-     ORDER BY created_at DESC
-     ;`).then((result) => {
+exports.selectAllArticles = (topic) => {
+    if (topic === '') {
+        topic = undefined
+    }
+    const queryValues = []
+    let mainQuery = `
+    SELECT articles.*, COUNT(articles.article_id) AS comment_count
+    FROM articles
+    LEFT JOIN comments 
+    ON articles.article_id = comments.article_id `;
+    let secondaryQuery = `
+    GROUP BY articles.article_id 
+    ORDER BY created_at DESC
+    ;`
+    let conditionalQuery = `
+    WHERE topic=$1`;
+    if(topic !== undefined) {
+        queryValues.push(topic)
+        mainQuery+=conditionalQuery       
+    }
+    return db.query(mainQuery+secondaryQuery,queryValues).then((result) => {
+       if (result.rows.length===0) {
+        return Promise.reject({status: 404, msg: "No articles found"})
+       }
        const articlesModified = result.rows;
        articlesModified.forEach((article)=>{ 
         delete article.body;
