@@ -364,6 +364,7 @@ describe('GET /api/topics', () => {
             .expect(200)
             .then((response)=> {
                 const users = response.body.users
+                
                 expect(users.length).toBe(4)
                 users.forEach((user)=>{
                     expect(user).toHaveProperty("username");
@@ -372,4 +373,12 @@ describe('GET /api/topics', () => {
                 })
             })
         })
-    });
+        test('GET /api/users responds with error 404a and \'Path Not Found\', when requested with a spelling mistake', () => {
+            return request(app)
+            .get("/api/userssss")
+            .expect(404)
+            .then((response)=>{
+                expect(response.body.msg).toBe("Path Not Found")
+            })
+        });
+    }); 
