@@ -89,7 +89,7 @@ describe('GET /api/topics', () => {
             })
         });
     })
-    describe('GET /api/articles', () => {
+    describe('GET /api/articles/:topic', () => {
         test('Responds with status code 200 and an articles array, with article objects and correct length.' , () => {
             return request(app)
             .get("/api/articles")
@@ -101,10 +101,9 @@ describe('GET /api/topics', () => {
                 articles.forEach((article) => {
                     expect(typeof article).toBe("object")
                 })
-               
             })
         });
-        test('Returned article objects posses an additional property of \'comment_count\'', () => {
+        test('Returned article objects posses an additional property of \'comment_count\' and \'body\' is not present', () => {
             return request(app)
             .get("/api/articles")
             .expect(200)
@@ -112,6 +111,7 @@ describe('GET /api/topics', () => {
                 const articles = response.body.articles;
                 articles.forEach((article) => {
                     expect(article).toHaveProperty("comment_count");
+                    expect(article).not.toHaveProperty("body");
                 }) 
             })    
         })
@@ -121,6 +121,7 @@ describe('GET /api/topics', () => {
             .expect(200)
             .then((response) => {
                 const articles = response.body.articles;
+                
                 articles.forEach((article) => {
                     if(article.article_id === 1) {
                         expect(article.comment_count).toBe("11")  
@@ -140,17 +141,19 @@ describe('GET /api/topics', () => {
                 })   
            })    
         })
-        test('Test that property \'body\' is not present inside the article objects', () => {
+        test('GET /api/articles/:topic, responds with articles who match the requested topic', () => {
             return request(app)
-            .get("/api/articles")
+            .get("/api/articles?topic=cats")
             .expect(200)
-            .then((response)=>{
-                const articles = response.body.articles;
+            .then((response) => {
+                const articles = response.body.articles
+                expect(articles.length).toBeGreaterThan(0)
                 articles.forEach((article) => {
-                    expect(article).not.toHaveProperty("body");
+                    expect(article.topic).toEqual("cats")
+                    expect(article).toHaveProperty("comment_count")
                 })
-            })
-        })
+            }) 
+        });
         test('Responds with 404 status code and error message, if provided a malformed path', () =>{
           return request(app)
           .get("/api/articlez")
