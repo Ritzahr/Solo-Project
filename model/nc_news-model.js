@@ -69,13 +69,17 @@ exports.modifyArticleByID = ( id, instructions) => {
         return response.rows[0]
     })
 }
-exports.selectCommentByID = (comment_id) => {
-    
+exports.selectCommentToBeDeleted = (comment_id) => {
     return db.query(`
     DELETE FROM comments
     WHERE comment_id=$1
-   
+    RETURNING*
     ;`, [comment_id]).then((results) => {
-        return results.rows
+        const deletedComment = results.rows
+        if (deletedComment.length === 0) {
+            return Promise.reject({status: 404, msg: `No comment found under ID:${comment_id}`})
+        }
+
+        return deletedComment
     })
 }

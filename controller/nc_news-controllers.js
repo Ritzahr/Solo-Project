@@ -1,4 +1,4 @@
-const { fetchTopics, selectArticleByID, selectAllArticles, selectAllCommentsByID, addCommentByID, modifyArticleByID, selectCommentByID} = require("../model/nc_news-model")
+const { fetchTopics, selectArticleByID, selectAllArticles, selectAllCommentsByID, addCommentByID, modifyArticleByID, selectCommentByID, selectCommentToBeDeleted} = require("../model/nc_news-model")
 const endpoints = require("../endpoints.json");
 
 exports.sendTopics = (req, res, next) => {
@@ -62,7 +62,9 @@ exports.updateArticlesByID = (req, res, next) => {
 exports.deleteCommentByID = (req,res,next) => {
     const { comment_id } = req.params; 
     
-    return selectCommentByID(comment_id).then((comment) => {
+    return selectCommentToBeDeleted(comment_id).then((comment)=>{
         res.status(204).send({ comment: comment })
+    }).catch((err) => {
+        next(err)
     })
 }

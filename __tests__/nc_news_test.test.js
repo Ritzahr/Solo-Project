@@ -331,8 +331,7 @@ describe('GET /api/topics', () => {
             })
         });
     });
-
-    describe.only('DELETE /api/comments/:comment_id', () => {
+    describe('DELETE /api/comments/:comment_id', () => {
         test('Delete comment by comment ID, respond with 204 and no content', () => {
             return request(app)
             .delete("/api/comments/1")
@@ -341,5 +340,20 @@ describe('GET /api/topics', () => {
                 expect(response.body).toEqual({})
             })
         });
+        test('Delete comment by comment ID, respond with 404 and error message when resource to be deleted is non-existent', () => {
+            return request(app)
+            .delete("/api/comments/555")
+            .expect(404)
+            .then((response)=> {
+               expect(response.body.msg).toBe("No comment found under ID:555")
+            })
+        });
+        test('Delete comment by comment ID, respond with 400 and error message when requested with an invalid ID', () => {
+            return request(app)
+            .delete("/api/comments/one")
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe("Bad Request")
+            })
+        })
     });
-   
