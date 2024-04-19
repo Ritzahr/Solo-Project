@@ -53,7 +53,7 @@ describe('GET /api/topics', () => {
             })
         });
     });
-    describe('GET /api/articles/:article_id', () => {
+    describe.only('GET /api/articles/:article_id', () => {
         test('Responds with status code 200 and an article object, with the correct properties', () => {
             return request(app)
             .get("/api/articles/4")
@@ -68,10 +68,19 @@ describe('GET /api/topics', () => {
                 expect(article).toHaveProperty("created_at");
                 expect(article).toHaveProperty("votes");
                 expect(article).toHaveProperty("article_img_url");
-
                 expect(article.article_id).toEqual(4);
             })
         })
+        test('NEW FEATURE, GET/api/articles/:id, now responds with article object, possessing a comment_count property, counting the number of comments that mention that article ID', () => {
+            return request(app)
+            .get("/api/articles/1")
+            .expect(200)
+            .then((response)=>{
+                const article = response.body.article
+                expect(article).toHaveProperty("comment_count")
+                expect(article.comment_count).toEqual("11")
+            })
+        });
         test('Responds with status code 404 and error message regarding the ID, when user inputs ID that cannot be found in database', () => {
             return request(app)
             .get("/api/articles/9999")
@@ -406,4 +415,5 @@ describe('GET /api/topics', () => {
                 expect(response.body.msg).toBe("Path Not Found")
             })
         });
-    }); 
+    });
+     
