@@ -18,6 +18,9 @@ exports.selectArticleByID = (article_id) => {
     })
 }
 exports.selectAllArticles = (topic) => {
+    if (topic === '') {
+        topic = undefined
+    }
     const queryValues = []
     let mainQuery = `
     SELECT articles.*, COUNT(articles.article_id) AS comment_count
@@ -35,6 +38,9 @@ exports.selectAllArticles = (topic) => {
         mainQuery+=conditionalQuery       
     }
     return db.query(mainQuery+secondaryQuery,queryValues).then((result) => {
+       if (result.rows.length===0) {
+        return Promise.reject({status: 404, msg: "No articles found"})
+       }
        const articlesModified = result.rows;
        articlesModified.forEach((article)=>{ 
         delete article.body;

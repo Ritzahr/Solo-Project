@@ -151,9 +151,23 @@ describe('GET /api/topics', () => {
                 articles.forEach((article) => {
                     expect(article.topic).toEqual("cats")
                     expect(article).toHaveProperty("comment_count")
+                    expect(article).not.toHaveProperty("body")
                 })
             }) 
         });
+        test('Responds with a 200 status code and all articles, when omitting the topic', () => {
+            return request(app)
+            .get("/api/articles?topic")
+            .expect(200)
+            .then((response) => {
+                const articles = response.body.articles;
+                expect(articles.length).toEqual(13)
+                articles.forEach((article) => {
+                    expect(article).toHaveProperty("comment_count");
+                    expect(article).not.toHaveProperty("body");
+                })
+           })
+        })
         test('Responds with 404 status code and error message, if provided a malformed path', () =>{
           return request(app)
           .get("/api/articlez")
@@ -162,7 +176,15 @@ describe('GET /api/topics', () => {
             expect(response.body.msg).toBe("Path Not Found");
           })  
         })
-})
+        test('Responds with a 404 status code, when requesting a topic that doesn\'t exist', () => {
+            return request(app)
+            .get("/api/articles?topic=philosophy")
+            .expect(404)
+            .then((response)=>{
+                expect(response.body.msg).toBe("No articles found")
+            })
+        }); 
+    });
     describe('GET /api/articles/:article_id/comments', () => {
         test('GET /api/articles/:article_id/comments responds with an array of comments for the given article ID', () => {
             return request(app)
