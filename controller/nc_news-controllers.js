@@ -20,9 +20,12 @@ exports.sendArticleByID = (req, res, next) => {
 }
 
 exports.sendAllArticles = (req, res, next) => {
-    return selectAllArticles().then((articles) => {
+    let { topic } = req.query
+    return selectAllArticles(topic).then((articles) => {
         res.status(200).send({articles: articles});
-    }).catch(next)
+    }).catch((err) => {
+        next(err)
+    })
 };
 
 exports.sendAllCommentsByID = (req, res, next) => {
