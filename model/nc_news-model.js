@@ -48,7 +48,7 @@ exports.selectAllArticles = (topic) => {
     }
     return db.query(mainQuery+secondaryQuery,queryValues).then((result) => {
        if (result.rows.length===0) {
-        return Promise.reject({status: 404, msg: "No articles found"})
+        return Promise.reject({status: 200, msg: "No articles found"})
        }
        const articlesModified = result.rows;
        articlesModified.forEach((article)=>{ 

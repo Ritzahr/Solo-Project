@@ -1,7 +1,9 @@
 const express = require("express");
 const { sendTopics, sendEndpointList, sendArticleByID, sendAllArticles, sendAllCommentsByID, postCommentsByID, updateArticlesByID, deleteCommentByID, sendAllUsers } = require("./controller/nc_news-controllers");
 const app = express(); 
+const cors = require('cors');
 
+app.use(cors());
 
 app.use(express.json());
 

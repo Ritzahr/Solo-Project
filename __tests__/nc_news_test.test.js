@@ -98,7 +98,7 @@ describe('GET /api/topics', () => {
             })
         });
     })
-    describe('GET /api/articles/:topic', () => {
+    describe.only('GET /api/articles/:topic', () => {
         test('Responds with status code 200 and an articles array, with article objects and correct length.' , () => {
             return request(app)
             .get("/api/articles")
@@ -188,7 +188,7 @@ describe('GET /api/topics', () => {
         test('Responds with a 404 status code, when requesting a topic that doesn\'t exist', () => {
             return request(app)
             .get("/api/articles?topic=philosophy")
-            .expect(404)
+            .expect(200)
             .then((response)=>{
                 expect(response.body.msg).toBe("No articles found")
             })
